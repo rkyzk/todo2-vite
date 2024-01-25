@@ -5,7 +5,7 @@ import {
   todoListStateLength,
   fetchData,
 } from "../states/TodoListState";
-import "../styles/TodoList.css";
+import "../styles/TodoList.module.css";
 import { Task } from "../types/Task";
 import {
   useCallback,
@@ -23,7 +23,7 @@ import { filterState } from "../states/FilterState";
 import { db } from "../../FirebaseConfig.js";
 import { ref, update, remove } from "firebase/database";
 import { completedListState } from "../states/CompletedListState";
-import { Box, Text, Button, Input, Select } from "@chakra-ui/react";
+import { Box, Text, Button, Input, Select, List } from "@chakra-ui/react";
 
 /** Todoリストを表示、更新削除機能などを持つコンポーネント */
 export const TodoList = () => {
@@ -285,7 +285,7 @@ export const TodoList = () => {
       <Text fontSize="1.6rem" textAlign={["center"]} mb={4}>
         Todoリスト
       </Text>
-      <ul className="TodoList">
+      <Box>
         {todosCount > 0 && (
           <>
             {/** todoが１件以上ある場合 */}
@@ -293,24 +293,23 @@ export const TodoList = () => {
               <Text ml="2px" mb={0}>
                 タイトル
               </Text>
-              <Text ml="158px" mb={0}>
+              <Text ml="182px" mb={0}>
                 内容
               </Text>
-              <Text ml="185px" mb={0}>
+              <Text ml="205px" mb={0}>
                 ステータス
               </Text>
-              <Text ml="52px" mb={0}>
+              <Text ml="32px" mb={0}>
                 期日
               </Text>
-              <Text ml="69px" mb={0}>
+              <Text ml="64px" mb={0}>
                 記載日
               </Text>
             </Box>
-            <Box display="flex" justifyContent="start">
+            <Box ml="486px" display="flex" justifyContent="start" mb={0} pb={0}>
               <Select
                 size="sm"
                 mt={0}
-                ml="470px"
                 name="filter"
                 value={filter}
                 onChange={onChangeFilter}
@@ -319,9 +318,15 @@ export const TodoList = () => {
                 <option value="notStarted">未着手</option>
                 <option value="inProgress">進行中</option>
               </Select>
-              <Button h="26px" w="78px" className="Arrow" onClick={handleSort}>
-                <small>並べ替え</small>
-                <span>↑</span>
+              <Button
+                ml="-350px"
+                h="26px"
+                w="78px"
+                className="Arrow"
+                onClick={handleSort}
+              >
+                <Text fontSize="0.9rem">並べ替え</Text>
+                <Text fontWeight="700">↑</Text>
               </Button>
             </Box>
           </>
@@ -329,115 +334,139 @@ export const TodoList = () => {
         {filteredTodosCount > 0 ? (
           filteredList.map((item) =>
             item.id === editId ? (
-              <li key={item.id}>
-                <Box
-                  mt={1}
-                  backgroundColor="lightskyblue"
-                  borderRadius="5px"
-                  border="#347"
-                  p={2}
-                  ref={boxRef}
+              <Box
+                key={item.id}
+                mt="3px"
+                backgroundColor="lightskyblue"
+                borderRadius="5px"
+                border="#347"
+                p={2}
+                ref={boxRef}
+              >
+                <form
+                  onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
+                    handleEdit(e, item)
+                  }
                 >
-                  <form
-                    onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
-                      handleEdit(e, item)
-                    }
+                  <Box
+                    display="flex"
+                    justifyContent="start"
+                    alignItems="center"
                   >
-                    <Box display="flex" alignItems="center">
-                      <Input
-                        type="text"
-                        name="title"
-                        id="editTitle"
-                        className="TodoListTitle"
-                        onChange={handleOnChange}
-                        value={editTodo?.title}
-                        required
-                      />
-                      <Input
-                        type="text"
-                        name="details"
-                        className="TodoListDetails"
-                        onChange={handleOnChange}
-                        value={editTodo?.details}
-                      />
-                      <select
-                        name="status"
-                        className="TodoListStatus"
-                        value={editTodo?.status}
-                        onChange={handleChangeSelect}
-                      >
-                        <option value="notStarted">未着手</option>
-                        <option value="inProgress">進行中</option>
-                        <option value="done">完了</option>
-                      </select>
-                      <Input
-                        type="date"
-                        name="deadline"
-                        className="TodoListDeadline"
-                        value={editTodo?.deadline}
-                        onChange={handleOnChange}
-                      />
-                      <span className="TodoListCreatedAt">
-                        {editTodo?.createdAt}
-                      </span>
-                      <button type="submit" className="EditFormBtn">
-                        保存
-                      </button>
-                      <button
-                        type="button"
-                        className="EditFormBtn CancelBtn"
-                        onClick={() => {
-                          clearEditTodo(null);
-                          setEditId("");
-                        }}
-                      >
-                        キャンセル
-                      </button>
-                    </Box>
-                  </form>
-                </Box>
-              </li>
+                    <Input
+                      type="text"
+                      name="title"
+                      id="editTitle"
+                      ml="2px"
+                      w="237px"
+                      onChange={handleOnChange}
+                      value={editTodo?.title}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="details"
+                      w="235px"
+                      onChange={handleOnChange}
+                      value={editTodo?.details}
+                    />
+                    <Select
+                      name="status"
+                      w="102px"
+                      h="34px"
+                      borderRadius="5px"
+                      value={editTodo?.status}
+                      onChange={handleChangeSelect}
+                    >
+                      <option value="notStarted">未着手</option>
+                      <option value="inProgress">進行中</option>
+                      <option value="done">完了</option>
+                    </Select>
+                    <Input
+                      type="date"
+                      name="deadline"
+                      ml="1px"
+                      w="95px"
+                      value={editTodo?.deadline}
+                      onChange={handleOnChange}
+                    />
+                    <Text ml="1px" w="95px">
+                      {editTodo?.createdAt}
+                    </Text>
+                    <Button
+                      px="7px"
+                      py="5px"
+                      type="submit"
+                      fontSize="0.8rem"
+                      mr="3px"
+                    >
+                      保存
+                    </Button>
+                    <Button
+                      type="button"
+                      px="7px"
+                      py="5px"
+                      fontSize="0.8rem"
+                      onClick={() => {
+                        clearEditTodo(null);
+                        setEditId("");
+                      }}
+                    >
+                      キャンセル
+                    </Button>
+                  </Box>
+                </form>
+              </Box>
             ) : (
-              <li key={item.id}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  mt={1}
-                  backgroundColor="#fafafa"
+              <Box
+                key={item.id}
+                display="flex"
+                alignItems="center"
+                mt="3px"
+                backgroundColor="#fafafa"
+                borderRadius="5px"
+                border="#347"
+                px="5px"
+                py={0}
+              >
+                <Text w="240px">{item.title}</Text>
+                <Text w="240px">{item.details}</Text>
+                <Select
+                  name="status"
+                  w="110px"
+                  h="34px"
                   borderRadius="5px"
-                  border="#347"
-                  p={2}
+                  my={0}
+                  value={item.status}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    onChangeSelectListItem(e, item)
+                  }
                 >
-                  <span className="TodoListTitle">{item.title}</span>
-                  <span className="TodoListDetails">{item.details}</span>
-                  <select
-                    name="status"
-                    className="TodoListStatus"
-                    value={item.status}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      onChangeSelectListItem(e, item)
-                    }
-                  >
-                    <option value="notStarted">未着手</option>
-                    <option value="inProgress">進行中</option>
-                    <option value="done">完了</option>
-                  </select>
-                  <span className="TodoListDeadline">{item.deadline}</span>
-                  <span className="TodoListCreatedAt">{item.createdAt}</span>
-                  <button
-                    className="EditFormBtn"
-                    onClick={() => showEditForm(item)}
-                  >
-                    編集
-                  </button>
-                  <button
-                    className="EditFormBtn"
-                    onClick={() => handleDelete(item)}
-                  >
-                    削除
-                  </button>
-                </Box>
-              </li>
+                  <option value="notStarted">未着手</option>
+                  <option value="inProgress">進行中</option>
+                  <option value="done">完了</option>
+                </Select>
+                <Text w="95px">{item.deadline}</Text>
+                <Text w="95px">{item.createdAt}</Text>
+                <Button
+                  className="EditFormBtn"
+                  px="7px"
+                  py="5px"
+                  fontSize="0.8rem"
+                  ml="2px"
+                  onClick={() => showEditForm(item)}
+                >
+                  編集
+                </Button>
+                <Button
+                  px="7px"
+                  py="5px"
+                  fontSize="0.8rem"
+                  onClick={() => handleDelete(item)}
+                >
+                  削除
+                </Button>
+              </Box>
             )
           )
         ) : (
@@ -445,7 +474,7 @@ export const TodoList = () => {
             未完了Todoなし!
           </Text>
         )}
-      </ul>
+      </Box>
     </Box>
   );
 };

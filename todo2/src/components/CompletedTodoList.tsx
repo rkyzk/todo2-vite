@@ -2,7 +2,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { todoListState } from "../states/TodoListState";
 import { Task } from "../types/Task";
 import React from "react";
-import "../styles/CompletedTodoList.css";
+import "../styles/CompletedTodoList.module.css";
 import { ref, remove, update } from "firebase/database";
 import { db } from "../../FirebaseConfig";
 import {
@@ -10,7 +10,7 @@ import {
   completedTodosCount,
 } from "../states/CompletedListState";
 import { editIdState } from "../states/EditIdState";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 
 export const CompletedTodoList = () => {
   /** 完了Todoの数を取得 */
@@ -70,46 +70,61 @@ export const CompletedTodoList = () => {
           <Text fontSize="1.6rem" textAlign={["center"]} mb={4}>
             完了Todoリスト
           </Text>
-          <ul className="CompletedList">
-            <li>
-              <span className="HdTitle">タイトル</span>
-              <span className="HdDetails">内容</span>
-              <span className="HdStatus">ステータス</span>
-              <span className="HdDeadline">期日</span>
-              <span className="HdCreatedAt">記載日</span>
-            </li>
-            {completedList.map((item: Task) => (
-              <li key={item.id}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  mt={1}
-                  backgroundColor="#fafafa"
-                  borderRadius="5px"
-                  border="#347"
-                  p={2}
-                >
-                  <span className="CompTitle">{item.title}</span>
-                  <span className="CompDetails">{item.details}</span>
-                  <span className="CompStatus">完了</span>
-                  <span className="CompDeadline">{item.deadline}</span>
-                  <span className="CompCreatedAt">{item.createdAt}</span>
-                  <button
-                    className="CompListBtn"
-                    onClick={(e: React.MouseEvent) => putBackItem(e, item)}
-                  >
-                    戻す
-                  </button>
-                  <button
-                    className="CompListBtn"
-                    onClick={(e: React.MouseEvent) => handleDelete(e, item)}
-                  >
-                    削除
-                  </button>
-                </Box>
-              </li>
-            ))}
-          </ul>
+          {/** 完了リストのヘッダー */}
+          <Box display="flex" mb={0} pb={0}>
+            <Text ml="2px" mb={0}>
+              タイトル
+            </Text>
+            <Text ml="182px" mb={0}>
+              内容
+            </Text>
+            <Text ml="205px" mb={0}>
+              ステータス
+            </Text>
+            <Text ml="32px" mb={0}>
+              期日
+            </Text>
+            <Text ml="64px" mb={0}>
+              記載日
+            </Text>
+          </Box>
+          {completedList.map((item: Task) => (
+            <Box
+              key={item.id}
+              display="flex"
+              alignItems="center"
+              mt={1}
+              backgroundColor="#fafafa"
+              borderRadius="5px"
+              border="#347"
+              px={2}
+              py={0}
+            >
+              <Text w="242px">{item.title}</Text>
+              <Text w="242px">{item.details}</Text>
+              <Text w="105px" pl="5px">
+                完了
+              </Text>
+              <Text w="95px">{item.deadline}</Text>
+              <Text w="95px">{item.createdAt}</Text>
+              <Button
+                px="7px"
+                py="5px"
+                fontSize="0.8rem"
+                onClick={(e: React.MouseEvent) => putBackItem(e, item)}
+              >
+                戻す
+              </Button>
+              <Button
+                px="7px"
+                py="5px"
+                fontSize="0.8rem"
+                onClick={(e: React.MouseEvent) => handleDelete(e, item)}
+              >
+                削除
+              </Button>
+            </Box>
+          ))}
         </Box>
       )}
     </>

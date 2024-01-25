@@ -2,9 +2,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { todoState } from "../states/TodoState";
 import { useCallback, useRef, useEffect, useState } from "react";
 import { todoListState } from "../states/TodoListState";
-import "../styles/AddTodo.css";
+import "../styles/AddTodo.module.css";
 import { editIdState } from "../states/EditIdState";
-import { Task } from "../types/Task.js
+import { Task } from "../types/Task";
 import { db } from "../../FirebaseConfig";
 import { ref, set } from "firebase/database";
 import { Box, Text, Input, Button } from "@chakra-ui/react";
@@ -26,7 +26,7 @@ export const AddTodo = () => {
 
   /** 初回レンダリング時、追加フォームのタイトルにフォーカス */
   useEffect(() => {
-    inputRef.current.focus();
+    inputRef?.current.focus();
   }, []);
 
   /** 追加ボタン押下時にTodoをリストに追加する。 */
@@ -149,21 +149,16 @@ export const AddTodo = () => {
             value={todo.deadline}
           />
           <Button
-            w="60px"
-            mt="2px"
-            className="AddFormBtn"
+            w="62px"
+            h="32px"
+            mt="1px"
+            mr="2px"
             type="submit"
             disabled={!!editId}
           >
             追加
           </Button>
-          <Button
-            w="60px"
-            mt="2px"
-            className="AddFormBtn"
-            type="button"
-            onClick={clearTodo}
-          >
+          <Button w="62px" h="32px" mt="1px" type="button" onClick={clearTodo}>
             クリア
           </Button>
         </Box>
