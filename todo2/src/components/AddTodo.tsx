@@ -107,9 +107,14 @@ export const AddTodo = () => {
 
   return (
     <Box w="920px" marginTop={10} mx="auto" pt={20}>
-      <Text fontSize="1.8rem" textAlign="center">
-        My Todo List
-      </Text>
+      <Box display="flex" justifyContent="center" alignItems="center" mb="30px">
+        <Text fontSize="1.2rem" fontWeight="200" mr="6px" mt="2px">
+          <i className="fa-regular fa-rectangle-list"></i>
+        </Text>
+        <Text fontSize="1.8rem" textAlign="center">
+          My Todo List
+        </Text>
+      </Box>
       {/** 追加フォーム */}
       <form className="AddForm" onSubmit={handleAddTask}>
         <Box

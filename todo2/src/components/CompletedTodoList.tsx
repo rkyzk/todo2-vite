@@ -67,9 +67,14 @@ export const CompletedTodoList = () => {
     <>
       {numCompletedTodos > 0 && (
         <Box w="950px" mt={10} mx="auto">
-          <Text fontSize="1.6rem" textAlign={["center"]} mb={4}>
-            完了Todoリスト
-          </Text>
+          <Box display="flex" justifyContent="center">
+            <Text mr="4px" mt="4px" fontWeight="400" fontSize="1.2rem">
+              <i className="fa-solid fa-check-double"></i>
+            </Text>
+            <Text fontSize="1.5rem" textAlign={["center"]} mb={4}>
+              完了Todoリスト
+            </Text>
+          </Box>
           {/** 完了リストのヘッダー */}
           <Box display="flex" mb={0} pb={0}>
             <Text ml="2px" mb={0}>
@@ -81,10 +86,10 @@ export const CompletedTodoList = () => {
             <Text ml="205px" mb={0}>
               ステータス
             </Text>
-            <Text ml="32px" mb={0}>
+            <Text ml="31px" mb={0}>
               期日
             </Text>
-            <Text ml="64px" mb={0}>
+            <Text ml="94px" mb={0}>
               記載日
             </Text>
           </Box>
@@ -105,10 +110,11 @@ export const CompletedTodoList = () => {
               <Text w="105px" pl="5px">
                 完了
               </Text>
-              <Text w="95px">{item.deadline}</Text>
+              <Text w="128px">{item.deadline}</Text>
               <Text w="95px">{item.createdAt}</Text>
               <Button
-                mr="2px"
+                ml="4px"
+                mr="3px"
                 h="30px"
                 backgroundColor="orange"
                 fontSize="0.8rem"

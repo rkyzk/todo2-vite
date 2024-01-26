@@ -288,9 +288,14 @@ export const TodoList = () => {
 
   return (
     <Box w="950px" mt={12} mx="auto">
-      <Text fontSize="1.6rem" textAlign={["center"]} mb={4}>
-        Todoリスト
-      </Text>
+      <Box display="flex" justifyContent="center">
+        <Text mr="4px" mt="4px" fontWeight="400" fontSize="1.2rem">
+          <i className="fa-solid fa-person-digging"></i>
+        </Text>
+        <Text fontSize="1.6rem" textAlign={["center"]} mb={4}>
+          Todoリスト
+        </Text>
+      </Box>
       <Box>
         {todosCount > 0 && (
           <>
@@ -305,10 +310,10 @@ export const TodoList = () => {
               <Text ml="205px" mb={0}>
                 ステータス
               </Text>
-              <Text ml="32px" mb={0}>
+              <Text ml="31px" mb={0}>
                 期日
               </Text>
-              <Text ml="64px" mb={0}>
+              <Text ml="94px" mb={0}>
                 記載日
               </Text>
             </Box>
@@ -324,10 +329,10 @@ export const TodoList = () => {
                 size="sm"
                 h="28px"
                 mt={0}
-                w="105px"
+                w="101px"
                 name="filter"
                 backgroundColor="white"
-                borderColor="lightgray"
+                borderColor="gray"
                 borderRadius="5px"
                 value={filter}
                 onChange={onChangeFilter}
@@ -337,12 +342,12 @@ export const TodoList = () => {
                 <option value="inProgress">進行中</option>
               </Select>
               <Button
-                h="28px"
+                h="27px"
                 backgroundColor="orange"
                 color="white"
                 ml="10px"
                 px="6px"
-                py="2px"
+                py="1px"
                 onClick={handleSort}
               >
                 <Text fontSize="0.8rem">並べ替え</Text>
@@ -358,7 +363,7 @@ export const TodoList = () => {
                 id="editForm"
                 key={item.id}
                 mt="3px"
-                backgroundColor="beige"
+                backgroundColor="orange"
                 borderRadius="5px"
                 border="#347"
                 px="2px"
@@ -401,9 +406,10 @@ export const TodoList = () => {
                     <Select
                       name="status"
                       size="sm"
-                      w="102px"
+                      w="97px"
                       h="32px"
                       backgroundColor="white"
+                      borderColor="transparent"
                       borderRadius="5px"
                       value={editTodo?.status}
                       onChange={handleChangeSelect}
@@ -416,22 +422,22 @@ export const TodoList = () => {
                       type="date"
                       name="deadline"
                       size="sm"
-                      ml="1px"
-                      w="105px"
+                      ml="6px"
+                      w="128px"
                       borderRadius="5px"
                       backgroundColor="white"
                       value={editTodo?.deadline}
                       onChange={handleOnChange}
                     />
-                    <Text ml="1px" w="95px">
+                    <Text ml="2px" w="95px">
                       {editTodo?.createdAt}
                     </Text>
                     <Button
-                      mr="2px"
+                      mr="3px"
                       h="32px"
-                      backgroundColor="orange"
+                      backgroundColor="aliceblue"
                       fontSize="0.8rem"
-                      color="white"
+                      color="charcoal"
                       px="7px"
                       py="2px"
                       type="submit"
@@ -441,9 +447,9 @@ export const TodoList = () => {
                     <Button
                       type="button"
                       h="32px"
-                      backgroundColor="orange"
+                      backgroundColor="aliceblue"
                       fontSize="0.8rem"
-                      color="white"
+                      color="charcoal"
                       px="4px"
                       py="2px"
                       onClick={() => {
@@ -466,15 +472,17 @@ export const TodoList = () => {
                 borderRadius="5px"
                 border="#347"
                 px="5px"
-                py={0}
+                py="3px"
               >
                 <Text w="240px">{item.title}</Text>
                 <Text w="240px">{item.details}</Text>
                 <Select
                   name="status"
-                  w="110px"
+                  w="102px"
                   h="34px"
                   borderRadius="5px"
+                  borderColor="gray"
+                  backgroundColor="white"
                   my={0}
                   value={item.status}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -485,11 +493,15 @@ export const TodoList = () => {
                   <option value="inProgress">進行中</option>
                   <option value="done">完了</option>
                 </Select>
-                <Text w="95px">{item.deadline}</Text>
-                <Text w="95px">{item.createdAt}</Text>
+                <Text w="120px" marginLeft="6px">
+                  {item.deadline}
+                </Text>
+                <Text w="95px" marginLeft="8px">
+                  {item.createdAt}
+                </Text>
                 <Button
-                  mr="2px"
-                  h="28px"
+                  mr="3px"
+                  h="32px"
                   backgroundColor="orange"
                   fontSize="0.8rem"
                   color="white"
@@ -501,7 +513,7 @@ export const TodoList = () => {
                   編集
                 </Button>
                 <Button
-                  h="28px"
+                  h="32px"
                   backgroundColor="orange"
                   fontSize="0.8rem"
                   color="white"

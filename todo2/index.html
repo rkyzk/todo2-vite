@@ -8,5 +8,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script
+      src="https://kit.fontawesome.com/b78a20097c.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <!-- process を定義するため以下のスクリプトを追加
+       https://stackoverflow.com/questions/74417822/how-can-i-use-buffer-process-in-vite-app -->
+    <script>
+      window.global = window;
+    </script>
+    <script type="module">
+      import process from "process";
+      window.process = process;
+    </script>
   </body>
 </html>
