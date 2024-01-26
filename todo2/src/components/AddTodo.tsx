@@ -120,7 +120,10 @@ export const AddTodo = () => {
         >
           <Box>
             <Input
-              className="inputTitle"
+              size="sm"
+              borderRadius="5px"
+              backgroundColor="white"
+              w="200px"
               type="text"
               name="title"
               ref={inputRef}
@@ -138,6 +141,10 @@ export const AddTodo = () => {
           <Input
             type="text"
             name="details"
+            size="sm"
+            borderRadius="5px"
+            backgroundColor="white"
+            w="200px"
             onChange={handleOnChange}
             value={todo.details}
             placeholder="内容"
@@ -145,20 +152,36 @@ export const AddTodo = () => {
           <Input
             type="date"
             name="deadline"
+            size="sm"
+            borderRadius="5px"
+            backgroundColor="white"
+            w="110px"
             onChange={handleOnChange}
             value={todo.deadline}
           />
           <Button
-            w="62px"
-            h="32px"
-            mt="1px"
             mr="2px"
+            h="32px"
+            backgroundColor="orange"
+            fontSize="0.8rem"
+            color="white"
+            px="10px"
+            py="2px"
             type="submit"
             disabled={!!editId}
           >
             追加
           </Button>
-          <Button w="62px" h="32px" mt="1px" type="button" onClick={clearTodo}>
+          <Button
+            h="32px"
+            backgroundColor="orange"
+            color="white"
+            fontSize="0.8rem"
+            px="10px"
+            py="2px"
+            type="button"
+            onClick={clearTodo}
+          >
             クリア
           </Button>
         </Box>

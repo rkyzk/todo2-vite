@@ -97,8 +97,8 @@ export const CompletedTodoList = () => {
               backgroundColor="#fafafa"
               borderRadius="5px"
               border="#347"
-              px={2}
-              py={0}
+              pl="2px"
+              py="4px"
             >
               <Text w="242px">{item.title}</Text>
               <Text w="242px">{item.details}</Text>
@@ -108,17 +108,22 @@ export const CompletedTodoList = () => {
               <Text w="95px">{item.deadline}</Text>
               <Text w="95px">{item.createdAt}</Text>
               <Button
-                px="7px"
-                py="5px"
+                mr="2px"
+                h="30px"
+                backgroundColor="orange"
                 fontSize="0.8rem"
+                color="white"
+                px="10px"
                 onClick={(e: React.MouseEvent) => putBackItem(e, item)}
               >
                 戻す
               </Button>
               <Button
-                px="7px"
-                py="5px"
+                h="30px"
+                backgroundColor="orange"
                 fontSize="0.8rem"
+                color="white"
+                px="10px"
                 onClick={(e: React.MouseEvent) => handleDelete(e, item)}
               >
                 削除

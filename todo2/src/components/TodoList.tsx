@@ -7,7 +7,7 @@ import {
 } from "../states/TodoListState";
 import "../styles/TodoList.module.css";
 import { Task } from "../types/Task";
-import {
+import React, {
   useCallback,
   ComponentState,
   useEffect,
@@ -23,7 +23,7 @@ import { filterState } from "../states/FilterState";
 import { db } from "../../FirebaseConfig.js";
 import { ref, update, remove } from "firebase/database";
 import { completedListState } from "../states/CompletedListState";
-import { Box, Text, Button, Input, Select, List } from "@chakra-ui/react";
+import { Box, Text, Button, Input, Select } from "@chakra-ui/react";
 
 /** Todoリストを表示、更新削除機能などを持つコンポーネント */
 export const TodoList = () => {
@@ -77,6 +77,12 @@ export const TodoList = () => {
     (item: Task) => {
       setEditId(item.id);
       setEditTodo(item);
+      //
+      const consoleLogId = (e: any) => {
+        console.log(e.target);
+        document.removeEventListener("click", consoleLogId);
+      };
+      document.addEventListener("click", (e) => consoleLogId(e));
       // 更新フォームのタイトルにフォーカス
       const inputBox = document.getElementById("editTitle");
       inputBox?.focus();
@@ -306,11 +312,23 @@ export const TodoList = () => {
                 記載日
               </Text>
             </Box>
-            <Box ml="486px" display="flex" justifyContent="start" mb={0} pb={0}>
+            <Box
+              ml="486px"
+              display="flex"
+              justifyContent="start"
+              alignItems="center"
+              mb={0}
+              pb={0}
+            >
               <Select
                 size="sm"
+                h="28px"
                 mt={0}
+                w="105px"
                 name="filter"
+                backgroundColor="white"
+                borderColor="lightgray"
+                borderRadius="5px"
                 value={filter}
                 onChange={onChangeFilter}
               >
@@ -319,13 +337,15 @@ export const TodoList = () => {
                 <option value="inProgress">進行中</option>
               </Select>
               <Button
-                ml="-350px"
-                h="26px"
-                w="78px"
-                className="Arrow"
+                h="28px"
+                backgroundColor="orange"
+                color="white"
+                ml="10px"
+                px="6px"
+                py="2px"
                 onClick={handleSort}
               >
-                <Text fontSize="0.9rem">並べ替え</Text>
+                <Text fontSize="0.8rem">並べ替え</Text>
                 <Text fontWeight="700">↑</Text>
               </Button>
             </Box>
@@ -335,12 +355,14 @@ export const TodoList = () => {
           filteredList.map((item) =>
             item.id === editId ? (
               <Box
+                id="editForm"
                 key={item.id}
                 mt="3px"
-                backgroundColor="lightskyblue"
+                backgroundColor="beige"
                 borderRadius="5px"
                 border="#347"
-                p={2}
+                px="2px"
+                py="4px"
                 ref={boxRef}
               >
                 <form
@@ -354,26 +376,34 @@ export const TodoList = () => {
                     alignItems="center"
                   >
                     <Input
+                      size="sm"
                       type="text"
+                      backgroundColor="white"
                       name="title"
                       id="editTitle"
                       ml="2px"
-                      w="237px"
+                      w="240px"
+                      borderRadius="5px"
                       onChange={handleOnChange}
                       value={editTodo?.title}
                       required
                     />
                     <Input
                       type="text"
+                      size="sm"
                       name="details"
-                      w="235px"
+                      w="238px"
+                      backgroundColor="white"
+                      borderRadius="5px"
                       onChange={handleOnChange}
                       value={editTodo?.details}
                     />
                     <Select
                       name="status"
+                      size="sm"
                       w="102px"
-                      h="34px"
+                      h="32px"
+                      backgroundColor="white"
                       borderRadius="5px"
                       value={editTodo?.status}
                       onChange={handleChangeSelect}
@@ -385,8 +415,11 @@ export const TodoList = () => {
                     <Input
                       type="date"
                       name="deadline"
+                      size="sm"
                       ml="1px"
-                      w="95px"
+                      w="105px"
+                      borderRadius="5px"
+                      backgroundColor="white"
                       value={editTodo?.deadline}
                       onChange={handleOnChange}
                     />
@@ -394,19 +427,25 @@ export const TodoList = () => {
                       {editTodo?.createdAt}
                     </Text>
                     <Button
-                      px="7px"
-                      py="5px"
-                      type="submit"
+                      mr="2px"
+                      h="32px"
+                      backgroundColor="orange"
                       fontSize="0.8rem"
-                      mr="3px"
+                      color="white"
+                      px="7px"
+                      py="2px"
+                      type="submit"
                     >
                       保存
                     </Button>
                     <Button
                       type="button"
-                      px="7px"
-                      py="5px"
+                      h="32px"
+                      backgroundColor="orange"
                       fontSize="0.8rem"
+                      color="white"
+                      px="4px"
+                      py="2px"
                       onClick={() => {
                         clearEditTodo(null);
                         setEditId("");
@@ -449,19 +488,25 @@ export const TodoList = () => {
                 <Text w="95px">{item.deadline}</Text>
                 <Text w="95px">{item.createdAt}</Text>
                 <Button
-                  className="EditFormBtn"
-                  px="7px"
-                  py="5px"
+                  mr="2px"
+                  h="28px"
+                  backgroundColor="orange"
                   fontSize="0.8rem"
+                  color="white"
+                  px="10px"
+                  py="2px"
                   ml="2px"
                   onClick={() => showEditForm(item)}
                 >
                   編集
                 </Button>
                 <Button
-                  px="7px"
-                  py="5px"
+                  h="28px"
+                  backgroundColor="orange"
                   fontSize="0.8rem"
+                  color="white"
+                  px="10px"
+                  py="2px"
                   onClick={() => handleDelete(item)}
                 >
                   削除

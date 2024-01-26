@@ -1,28 +1,13 @@
-input {
-  padding-left: 2px;
-  border: solid 1px #aaa;
-  border-radius: 5px;
-}
-
-button {
-  background-color: orange;
-  border-radius: 5px;
-  color: #333;
-  border: transparent;
-}
-
-button:hover {
-  background-color: rgb(55, 103, 136);
-  opacity: 0.7;
+button:hover,
+button:active {
+  color: rgb(97, 60, 8) !important;
   border: none;
-  outline: none;
-  box-shadow: none;
+  background-color: rgb(240, 213, 116) !important;
 }
 
 button:disabled {
-  background-color: rgb(47, 80, 105);
-  border: #ddd;
-  color: #aaa;
+  background-color: rgb(108, 87, 28);
+  color: #eee;
   opacity: 0.5;
 }
 
