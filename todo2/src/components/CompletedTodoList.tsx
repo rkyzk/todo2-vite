@@ -1,7 +1,7 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { todoListState } from "../states/TodoListState";
 import { Task } from "../types/Task";
-import React from "react";
+import React, { useCallback } from "react";
 import "../styles/CompletedTodoList.module.css";
 import { ref, remove, update } from "firebase/database";
 import { db } from "../../FirebaseConfig";
@@ -9,39 +9,43 @@ import {
   completedListState,
   completedTodosCount,
 } from "../states/CompletedListState";
-import { editIdState } from "../states/EditIdState";
 import { Box, Button, Text } from "@chakra-ui/react";
 
 export const CompletedTodoList = () => {
-  /** 完了Todoの数を取得 */
+  /** 完了Todoの件数取得 */
   const numCompletedTodos = useRecoilValue(completedTodosCount);
+  /**　Todoリスト取得 */
   const [todoList, setTodoList] = useRecoilState(todoListState);
+  /**　完了Todoリスト取得 */
   const completedList: Task[] = useRecoilValue(completedListState);
-  const [editId, setEditId] = useRecoilState(editIdState);
 
   /** Todoを完了リストから未完了のリストへ移動 */
-  const putBackItem = (e: React.MouseEvent, item: Task) => {
-    // 更新フォームが開いていたら閉じる。
-    setEditId("");
-    const editedItem: Task = { ...item, status: "inProgress" };
-    updateTodoData(editedItem); // DBを更新
-    // 画面上でリストを更新
-    const newList = [...todoList];
-    setTodoList(
-      newList.map((todo) => {
-        return todo.id === item.id ? editedItem : todo;
-      })
-    );
-  };
+  const putBackItem = useCallback(
+    (e: React.MouseEvent, item: Task) => {
+      /** DBを更新 */
+      const editedItem: Task = { ...item, status: "inProgress" };
+      updateTodoData(editedItem);
+      // 画面上でリストを更新
+      const newList = [...todoList];
+      setTodoList(
+        newList.map((todo) => {
+          return todo.id === item.id ? editedItem : todo;
+        })
+      );
+    },
+    [todoList]
+  );
 
-  /** todoをcompleteListより削除する */
-  const handleDelete = (e: React.MouseEvent | null, item: Task) => {
-    // 更新フォームが開いていたら閉じる。
-    setEditId("");
-    deleteTodoData(item); // DBより削除
-    const newList = [...todoList].filter((todo) => todo.id !== item.id);
-    setTodoList(newList); // 画面より削除
-  };
+  /** TodoをcompleteListより削除する */
+  const handleDelete = useCallback(
+    (e: React.MouseEvent | null, item: Task) => {
+      deleteTodoData(item); // DBより削除
+      /** 画面より削除 */
+      const newList = [...todoList].filter((todo) => todo.id !== item.id);
+      setTodoList(newList);
+    },
+    [todoList]
+  );
 
   /** Firebase DBのTodoアイテムを削除 */
   const deleteTodoData = async (item: Task) => {

@@ -4,21 +4,19 @@ import { useCallback, useRef, useEffect, useState } from "react";
 import { todoListState } from "../states/TodoListState";
 import "../styles/AddTodo.module.css";
 import { editIdState } from "../states/EditIdState";
-import { Task } from "../types/Task";
+import { Task, Status } from "../types/Task";
 import { ref, set } from "firebase/database";
 import { db } from "../../FirebaseConfig";
 import { Box, Text, Input, Button } from "@chakra-ui/react";
 
-/** Todo追加機能を持ち、追加フォーム表示するコンポーネント */
+/** 追加フォーム表示、追加処理をするコンポーネント */
 export const AddTodo = () => {
   /** 追加フォーム入力内容を格納する */
   const [todo, setTodo] = useRecoilState(todoState);
-  /** Todoのリストを格納 */
+  /** Todoリストを格納 */
   const [todoList, setTodoList] = useRecoilState(todoListState);
   /** 編集中Todoの内容を格納 */
   const editId = useRecoilValue(editIdState);
-  /** ステータス type宣言 */
-  type Status = "notStarted" | "inProgress" | "done";
   /** タイトルのバリデーション表示 */
   const [error, setError] = useState(false);
   /** 追加フォームのタイトル入力欄にrefを設定 */
@@ -69,7 +67,7 @@ export const AddTodo = () => {
     [todo, todoList]
   );
 
-  /** 入力内容をtodo Stateに格納。画面に反映される。 */
+  /** 入力内容をtodo に格納。画面に反映される。 */
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const task: Task = { ...todo, [e.target.name]: e.target.value };

@@ -22,28 +22,26 @@ import {
 } from "../states/CompletedListState";
 import { Box, Text, Button, Input, Select } from "@chakra-ui/react";
 
-/** Todoリストを表示、更新削除機能などを持つコンポーネント */
+/** Todoリストを表示、Todo更新削除処理をするコンポーネント */
 export const TodoList = () => {
   /** 編集中todo の内容を格納 */
   const [editTodo, setEditTodo] = useRecoilState(editTodoState);
-  /** Todoリストの内容を格納 （全ステータス含む）*/
+  /** Todoリストの内容を格納 （全ステータス）*/
   const [todoList, setTodoList] = useRecoilState(todoListState);
+  /** Todoリスト内の件数 */
+  const todosCount: number = useRecoilValue(todoListStateLength);
   /** フィルターで絞ったリストの内容を格納（表示するTodos） */
   const [filteredList, setFilteredList] = useRecoilState(filteredListState);
-  /** フィルターされたTodoの数 */
+  /** フィルターで絞ったTodo件数 */
   const filteredTodosCount = useRecoilValue(filteredListStateLength);
   /** 編集中todo の idを格納 */
   const [editId, setEditId] = useRecoilState(editIdState);
-  /** Todoリスト内の項目数 */
-  const todosCount: number = useRecoilValue(todoListStateLength);
   /** フィルターするステータス */
   const [filter, setFilter] = useRecoilState(filterState);
   /** 完了リスト */
   const [completedList, setCompletedList] = useRecoilState(completedListState);
   /** 完了Todoの件数取得 */
   const numCompletedTodos = useRecoilValue(completedTodosCount);
-
-  completedTodosCount;
 
   /** 初回レンダリング時にDBのTodoリストを変数todoListに格納 */
   useEffect(() => {
@@ -84,29 +82,29 @@ export const TodoList = () => {
     });
   }, []);
 
-  /** 更新フォームが表示されている時、更新フォームの外側がクリックされたら更新フォームを閉じる */
-  const handleClickOutsideEditForm = (e: any) => {
+  /** 更新フォームが表示されている時、フォームの外側がクリックされたらフォームを閉じる */
+  const handleClickOutsideEditForm = useCallback((e: any) => {
     // 更新フォーム外がクリックされた場合
     !e.target.classList.contains("edtForm") && closeEditForm();
-  };
+  }, []);
 
   /** 更新フォームを閉じる */
-  const closeEditForm = () => {
+  const closeEditForm = useCallback(() => {
     setEditId("");
     clearEditTodo();
     // イベントリスナーを削除
     document.removeEventListener("click", handleClickOutsideEditForm);
-  };
+  }, []);
 
   /** 更新ボタン押下時に更新フォームを表示 */
-  const showEditForm = (item: Task) => {
+  const showEditForm = useCallback((item: Task) => {
     setEditId(item.id);
     setEditTodo(item);
     // 次回クリックでクリックされる要素を判断するためイベントリスナー追加
     setTimeout(() => {
       document.addEventListener("click", (e) => handleClickOutsideEditForm(e));
     }, 200);
-  };
+  }, []);
 
   /** 更新フォームのタイトル、詳細の入力値を画面に表示 */
   const handleOnChange = useCallback(
@@ -158,7 +156,7 @@ export const TodoList = () => {
     }
   };
 
-  /** Firebase DBのTodoアイテムを削除 */
+  /** Firebase DBよりTodoアイテムを削除 */
   const deleteTodoData = async (item: Task) => {
     try {
       const taskRef = ref(db, "tasks/" + item.id);
@@ -169,17 +167,21 @@ export const TodoList = () => {
   };
 
   /** 保存ボタン押下時にリストを更新し、更新フォームを閉じる。 */
-  const handleEdit = (e: React.FormEvent<HTMLFormElement>, item: Task) => {
-    e.preventDefault();
-    document.removeEventListener("click", handleClickOutsideEditForm);
-    updateTodoData(editTodo); // DB更新
-    const newList = [...todoList].map((todo) => {
-      return todo.id === item.id ? editTodo : todo;
-    });
-    setTodoList(newList); // 画面更新
-    clearEditTodo(); // editTodoを初期値に戻す
-    closeEditForm(); // 更新フォームを閉じる
-  };
+  const handleEdit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>, item: Task) => {
+      e.preventDefault();
+      document.removeEventListener("click", handleClickOutsideEditForm);
+      updateTodoData(editTodo); // DB更新
+      // 画面更新
+      const newList = [...todoList].map((todo) => {
+        return todo.id === item.id ? editTodo : todo;
+      });
+      setTodoList(newList);
+      clearEditTodo(); // editTodoを初期値に戻す
+      closeEditForm(); // 更新フォームを閉じる
+    },
+    [todoList, editTodo]
+  );
 
   /** todoを削除する */
   const handleDelete = useCallback(
@@ -294,194 +296,194 @@ export const TodoList = () => {
                 <Text fontWeight="700">↑</Text>
               </Button>
             </Box>
-          {/** フィルター有無関わらず表示するTodoがある場合 */}
-          {filteredTodosCount > 0 ? (
-          filteredList.map((item) =>
-            item.id === editId ? (
-              <Box
-                id="editForm"
-                key={item.id}
-                className="edtForm"
-                mt="3px"
-                backgroundColor="orange"
-                borderRadius="5px"
-                border="#347"
-                px="2px"
-                py="4px"
-              >
-                <form
-                  onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
-                    handleEdit(e, item)
-                  }
-                >
-                  {/** 編集中Todoの行 */}
+            {/** フィルター有無関わらず表示するTodoがある場合 */}
+            {filteredTodosCount > 0 ? (
+              filteredList.map((item) =>
+                item.id === editId ? (
                   <Box
-                    display="flex"
-                    justifyContent="start"
-                    alignItems="center"
+                    id="editForm"
+                    key={item.id}
                     className="edtForm"
+                    mt="3px"
+                    backgroundColor="orange"
+                    borderRadius="5px"
+                    border="#347"
+                    px="2px"
+                    py="4px"
                   >
-                    <Input
-                      size="sm"
-                      type="text"
-                      className="edtForm"
-                      backgroundColor="white"
-                      name="title"
-                      id="editTitle"
-                      ml="2px"
-                      w="240px"
-                      borderRadius="5px"
-                      onChange={handleOnChange}
-                      value={editTodo?.title}
-                      required
-                    />
-                    <Input
-                      type="text"
-                      size="sm"
-                      className="edtForm"
-                      name="details"
-                      w="238px"
-                      backgroundColor="white"
-                      borderRadius="5px"
-                      onChange={handleOnChange}
-                      value={editTodo?.details}
-                    />
+                    <form
+                      onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
+                        handleEdit(e, item)
+                      }
+                    >
+                      {/** 編集中Todoの行 */}
+                      <Box
+                        display="flex"
+                        justifyContent="start"
+                        alignItems="center"
+                        className="edtForm"
+                      >
+                        <Input
+                          size="sm"
+                          type="text"
+                          className="edtForm"
+                          backgroundColor="white"
+                          name="title"
+                          id="editTitle"
+                          ml="2px"
+                          w="240px"
+                          borderRadius="5px"
+                          onChange={handleOnChange}
+                          value={editTodo?.title}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          size="sm"
+                          className="edtForm"
+                          name="details"
+                          w="238px"
+                          backgroundColor="white"
+                          borderRadius="5px"
+                          onChange={handleOnChange}
+                          value={editTodo?.details}
+                        />
+                        <Select
+                          name="status"
+                          className="edtForm"
+                          size="sm"
+                          w="97px"
+                          h="32px"
+                          backgroundColor="white"
+                          borderColor="transparent"
+                          borderRadius="5px"
+                          value={editTodo?.status}
+                          onChange={handleChangeSelect}
+                        >
+                          <option value="notStarted">未着手</option>
+                          <option value="inProgress">進行中</option>
+                          <option value="done">完了</option>
+                        </Select>
+                        <Input
+                          type="date"
+                          name="deadline"
+                          className="edtForm"
+                          size="sm"
+                          ml="6px"
+                          w="128px"
+                          borderRadius="5px"
+                          backgroundColor="white"
+                          value={editTodo?.deadline}
+                          onChange={handleOnChange}
+                        />
+                        <Text ml="2px" w="95px" className="edtForm">
+                          {editTodo?.createdAt}
+                        </Text>
+                        <Button
+                          mr="3px"
+                          h="32px"
+                          className="edtForm"
+                          backgroundColor="aliceblue"
+                          fontSize="0.8rem"
+                          color="charcoal"
+                          px="7px"
+                          py="2px"
+                          type="submit"
+                        >
+                          保存
+                        </Button>
+                        <Button
+                          type="button"
+                          h="32px"
+                          backgroundColor="aliceblue"
+                          fontSize="0.8rem"
+                          color="charcoal"
+                          px="4px"
+                          py="2px"
+                          onClick={closeEditForm}
+                        >
+                          キャンセル
+                        </Button>
+                      </Box>
+                    </form>
+                  </Box>
+                ) : (
+                  <Box
+                    key={item.id}
+                    display="flex"
+                    alignItems="center"
+                    mt="3px"
+                    backgroundColor="#fafafa"
+                    borderRadius="5px"
+                    border="#347"
+                    px="5px"
+                    py="3px"
+                  >
+                    {/** 編集中ではないTodoの行 */}
+                    <Text w="240px">{item.title}</Text>
+                    <Text w="240px">{item.details}</Text>
                     <Select
                       name="status"
-                      className="edtForm"
-                      size="sm"
-                      w="97px"
-                      h="32px"
-                      backgroundColor="white"
-                      borderColor="transparent"
+                      w="102px"
+                      h="34px"
                       borderRadius="5px"
-                      value={editTodo?.status}
-                      onChange={handleChangeSelect}
+                      borderColor="gray"
+                      backgroundColor="white"
+                      my={0}
+                      value={item.status}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                        onChangeSelectListItem(e, item)
+                      }
                     >
                       <option value="notStarted">未着手</option>
                       <option value="inProgress">進行中</option>
                       <option value="done">完了</option>
                     </Select>
-                    <Input
-                      type="date"
-                      name="deadline"
-                      className="edtForm"
-                      size="sm"
-                      ml="6px"
-                      w="128px"
-                      borderRadius="5px"
-                      backgroundColor="white"
-                      value={editTodo?.deadline}
-                      onChange={handleOnChange}
-                    />
-                    <Text ml="2px" w="95px" className="edtForm">
-                      {editTodo?.createdAt}
+                    <Text w="120px" marginLeft="6px">
+                      {item.deadline}
+                    </Text>
+                    <Text w="95px" marginLeft="8px">
+                      {item.createdAt}
                     </Text>
                     <Button
                       mr="3px"
                       h="32px"
                       className="edtForm"
-                      backgroundColor="aliceblue"
+                      backgroundColor="orange"
                       fontSize="0.8rem"
-                      color="charcoal"
-                      px="7px"
+                      color="white"
+                      px="10px"
                       py="2px"
-                      type="submit"
+                      ml="2px"
+                      onClick={() => showEditForm(item)}
                     >
-                      保存
+                      編集
                     </Button>
                     <Button
-                      type="button"
                       h="32px"
-                      backgroundColor="aliceblue"
+                      backgroundColor="orange"
                       fontSize="0.8rem"
-                      color="charcoal"
-                      px="4px"
+                      color="white"
+                      px="10px"
                       py="2px"
-                      onClick={closeEditForm}
+                      onClick={() => handleDelete(item)}
                     >
-                      キャンセル
+                      削除
                     </Button>
                   </Box>
-                </form>
-              </Box>
+                )
+              )
             ) : (
-              <Box
-                key={item.id}
-                display="flex"
-                alignItems="center"
-                mt="3px"
-                backgroundColor="#fafafa"
-                borderRadius="5px"
-                border="#347"
-                px="5px"
-                py="3px"
-              >
-                {/** 編集中ではないTodoの行 */}
-                <Text w="240px">{item.title}</Text>
-                <Text w="240px">{item.details}</Text>
-                <Select
-                  name="status"
-                  w="102px"
-                  h="34px"
-                  borderRadius="5px"
-                  borderColor="gray"
-                  backgroundColor="white"
-                  my={0}
-                  value={item.status}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    onChangeSelectListItem(e, item)
-                  }
-                >
-                  <option value="notStarted">未着手</option>
-                  <option value="inProgress">進行中</option>
-                  <option value="done">完了</option>
-                </Select>
-                <Text w="120px" marginLeft="6px">
-                  {item.deadline}
-                </Text>
-                <Text w="95px" marginLeft="8px">
-                  {item.createdAt}
-                </Text>
-                <Button
-                  mr="3px"
-                  h="32px"
-                  className="edtForm"
-                  backgroundColor="orange"
-                  fontSize="0.8rem"
-                  color="white"
-                  px="10px"
-                  py="2px"
-                  ml="2px"
-                  onClick={() => showEditForm(item)}
-                >
-                  編集
-                </Button>
-                <Button
-                  h="32px"
-                  backgroundColor="orange"
-                  fontSize="0.8rem"
-                  color="white"
-                  px="10px"
-                  py="2px"
-                  onClick={() => handleDelete(item)}
-                >
-                  削除
-                </Button>
-              </Box>
-            )
-          )
-        ) : (
-          <Text fontSize="1.4rem" textAlign="center" marginTop={4}>
-            当該ステータスのTodoなし
-          </Text>
-        )}
-        </>
+              <Text fontSize="1.4rem" textAlign="center" marginTop={4}>
+                当該ステータスのTodoなし
+              </Text>
+            )}
+          </>
         ) : (
           <Text fontSize="1.4rem" textAlign="center" marginTop={4}>
             未完了Todoなし
           </Text>
-        )}        
+        )}
       </Box>
     </Box>
   );

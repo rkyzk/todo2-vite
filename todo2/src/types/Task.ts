@@ -1,4 +1,4 @@
-type Status = "notStarted" | "inProgress" | "done";
+export type Status = "notStarted" | "inProgress" | "done";
 
 export type Task = {
   id: string;

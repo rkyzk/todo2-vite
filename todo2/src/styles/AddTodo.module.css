@@ -1,17 +1,9 @@
 button:hover,
 button:active {
-  color: rgb(97, 60, 8) !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
   background-color: rgb(240, 213, 116) !important;
 }
 
 .AddForm {
   width: 100%;
   padding-top: 30px;
-}
-
-.AppTitle {
-  margin-left: 3px;
 }
