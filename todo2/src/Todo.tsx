@@ -8,7 +8,7 @@ export const Todo = () => {
   return (
     <RecoilRoot>
       <ChakraProvider>
-        <Box backgroundColor="#eee" height="100vh" width="100%" marginTop={-10}>
+        <Box backgroundColor="#eee" height="100%" width="100%" marginTop={-10}>
           <AddTodo />
           <TodoList />
           <CompletedTodoList />

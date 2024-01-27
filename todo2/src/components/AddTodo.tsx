@@ -5,8 +5,8 @@ import { todoListState } from "../states/TodoListState";
 import "../styles/AddTodo.module.css";
 import { editIdState } from "../states/EditIdState";
 import { Task } from "../types/Task";
-import { db } from "../../FirebaseConfig";
 import { ref, set } from "firebase/database";
+import { db } from "../../FirebaseConfig";
 import { Box, Text, Input, Button } from "@chakra-ui/react";
 
 /** Todo追加機能を持ち、追加フォーム表示するコンポーネント */
@@ -127,6 +127,7 @@ export const AddTodo = () => {
             <Input
               size="sm"
               borderRadius="5px"
+              borderColor="gray"
               backgroundColor="white"
               w="200px"
               type="text"
@@ -148,6 +149,7 @@ export const AddTodo = () => {
             name="details"
             size="sm"
             borderRadius="5px"
+            borderColor="gray"
             backgroundColor="white"
             w="200px"
             onChange={handleOnChange}
@@ -157,10 +159,11 @@ export const AddTodo = () => {
           <Input
             type="date"
             name="deadline"
+            borderColor="gray"
             size="sm"
             borderRadius="5px"
             backgroundColor="white"
-            w="110px"
+            w="130px"
             onChange={handleOnChange}
             value={todo.deadline}
           />

@@ -105,17 +105,21 @@ export const CompletedTodoList = () => {
               pl="2px"
               py="4px"
             >
-              <Text w="242px">{item.title}</Text>
+              <Text w="242px" pl="2px">
+                {item.title}
+              </Text>
               <Text w="242px">{item.details}</Text>
               <Text w="105px" pl="5px">
                 完了
               </Text>
-              <Text w="128px">{item.deadline}</Text>
+              <Text w="124px" ml="4px">
+                {item.deadline}
+              </Text>
               <Text w="95px">{item.createdAt}</Text>
               <Button
                 ml="4px"
                 mr="3px"
-                h="30px"
+                h="32px"
                 backgroundColor="orange"
                 fontSize="0.8rem"
                 color="white"
@@ -125,7 +129,7 @@ export const CompletedTodoList = () => {
                 戻す
               </Button>
               <Button
-                h="30px"
+                h="32px"
                 backgroundColor="orange"
                 fontSize="0.8rem"
                 color="white"

@@ -7,22 +7,19 @@ import {
 } from "../states/TodoListState";
 import "../styles/TodoList.module.css";
 import { Task } from "../types/Task";
-import React, {
-  useCallback,
-  ComponentState,
-  useEffect,
-  useRef,
-  useLayoutEffect,
-} from "react";
+import React, { useCallback, ComponentState, useEffect } from "react";
 import { editTodoState } from "../states/EditTodoState";
 import {
   filteredListState,
   filteredListStateLength,
 } from "../states/FilteredListState";
 import { filterState } from "../states/FilterState";
-import { db } from "../../FirebaseConfig.js";
+import { db } from "../../FirebaseConfig";
 import { ref, update, remove } from "firebase/database";
-import { completedListState } from "../states/CompletedListState";
+import {
+  completedListState,
+  completedTodosCount,
+} from "../states/CompletedListState";
 import { Box, Text, Button, Input, Select } from "@chakra-ui/react";
 
 /** Todoリストを表示、更新削除機能などを持つコンポーネント */
@@ -43,7 +40,10 @@ export const TodoList = () => {
   const [filter, setFilter] = useRecoilState(filterState);
   /** 完了リスト */
   const [completedList, setCompletedList] = useRecoilState(completedListState);
-  const boxRef = useRef<HTMLDivElement>(null);
+  /** 完了Todoの件数取得 */
+  const numCompletedTodos = useRecoilValue(completedTodosCount);
+
+  completedTodosCount;
 
   /** 初回レンダリング時にDBのTodoリストを変数todoListに格納 */
   useEffect(() => {
@@ -72,23 +72,41 @@ export const TodoList = () => {
     }
   }, [todoList, filter]);
 
+  /** 変数editTodoを初期値に戻す */
+  const clearEditTodo = useCallback(() => {
+    setEditTodo({
+      id: "",
+      title: "",
+      status: "notStarted",
+      details: "",
+      deadline: "",
+      createdAt: "",
+    });
+  }, []);
+
+  /** 更新フォームが表示されている時、更新フォームの外側がクリックされたら更新フォームを閉じる */
+  const handleClickOutsideEditForm = (e: any) => {
+    // 更新フォーム外がクリックされた場合
+    !e.target.classList.contains("edtForm") && closeEditForm();
+  };
+
+  /** 更新フォームを閉じる */
+  const closeEditForm = () => {
+    setEditId("");
+    clearEditTodo();
+    // イベントリスナーを削除
+    document.removeEventListener("click", handleClickOutsideEditForm);
+  };
+
   /** 更新ボタン押下時に更新フォームを表示 */
-  const showEditForm = useCallback(
-    (item: Task) => {
-      setEditId(item.id);
-      setEditTodo(item);
-      //
-      const consoleLogId = (e: any) => {
-        console.log(e.target);
-        document.removeEventListener("click", consoleLogId);
-      };
-      document.addEventListener("click", (e) => consoleLogId(e));
-      // 更新フォームのタイトルにフォーカス
-      const inputBox = document.getElementById("editTitle");
-      inputBox?.focus();
-    },
-    [editId]
-  );
+  const showEditForm = (item: Task) => {
+    setEditId(item.id);
+    setEditTodo(item);
+    // 次回クリックでクリックされる要素を判断するためイベントリスナー追加
+    setTimeout(() => {
+      document.addEventListener("click", (e) => handleClickOutsideEditForm(e));
+    }, 200);
+  };
 
   /** 更新フォームのタイトル、詳細の入力値を画面に表示 */
   const handleOnChange = useCallback(
@@ -150,94 +168,22 @@ export const TodoList = () => {
     }
   };
 
-  /** 変数editTodoを初期値に戻す */
-  const clearEditTodo = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | null) => {
-      setEditTodo({
-        id: "",
-        title: "",
-        status: "notStarted",
-        details: "",
-        deadline: "",
-        createdAt: "",
-      });
-    },
-    []
-  );
-
   /** 保存ボタン押下時にリストを更新し、更新フォームを閉じる。 */
   const handleEdit = (e: React.FormEvent<HTMLFormElement>, item: Task) => {
     e.preventDefault();
+    document.removeEventListener("click", handleClickOutsideEditForm);
     updateTodoData(editTodo); // DB更新
     const newList = [...todoList].map((todo) => {
       return todo.id === item.id ? editTodo : todo;
     });
     setTodoList(newList); // 画面更新
-    clearEditTodo(null); // editTodoを初期値に戻す
-    setEditId("");
+    clearEditTodo(); // editTodoを初期値に戻す
+    closeEditForm(); // 更新フォームを閉じる
   };
-
-  // useEffect(() => {
-  //   //対象の要素を取得
-  //   const el = boxRef.current;
-
-  //   //対象の要素がなければ何もしない
-  //   // if (!el) return;
-
-  //   //クリックした時に実行する関数
-  //   const hundleClickOutside = (e: MouseEvent) => {
-  //     // console.log(boxRef.current);
-  //     console.log("178", e.target);
-  //     if (!el?.contains(e.target as Node)) {
-  //       //ここに外側をクリックしたときの処理
-  //       console.log("hi");
-  //     } else {
-  //       //ここに内側をクリックしたときの処理
-  //       console.log("hi2");
-  //     }
-  //   };
-
-  //   //クリックイベントを設定
-  //   document.addEventListener("click", hundleClickOutside);
-
-  //   //クリーンアップ関数
-  //   return () => {
-  //     //コンポーネントがアンマウント、再レンダリングされたときにクリックイベントを削除
-  //     document.removeEventListener("click", hundleClickOutside);
-  //   };
-  // }, [boxRef]);
-
-  useLayoutEffect(() => {
-    // フォーカス時のイベントリスナー
-    const handleFocus = () => {
-      console.log("フォーカスされました");
-      // ここにフォーカス時の処理を書く
-    };
-
-    // ブラー（フォーカスが外れた）時のイベントリスナー
-    const handleBlur = () => {
-      console.log("フォーカスが外れました");
-      // ここにフォーカスが外れた時の処理を書く
-    };
-
-    // イベントリスナーを設定
-    const boxElement = boxRef.current;
-    boxElement?.addEventListener("focus", handleFocus);
-    boxElement?.addEventListener("blur", handleBlur);
-
-    // クリーンアップ関数
-    return () => {
-      boxElement?.removeEventListener("focus", handleFocus);
-      boxElement?.removeEventListener("blur", handleBlur);
-    };
-  }, []);
 
   /** todoを削除する */
   const handleDelete = useCallback(
     (item: Task) => {
-      // 更新フォームが開いていたら閉じる。
-      setEditId("");
-      clearEditTodo(null);
       // DBより削除
       const newList = [...todoList].filter((todo) => todo.id !== item.id);
       deleteTodoData(item);
@@ -249,9 +195,6 @@ export const TodoList = () => {
   /** Todoリストをステータスによりフィルターする */
   const onChangeFilter = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      // 更新フォームが開いていたら閉じる。
-      setEditId("");
-      clearEditTodo(null);
       // 変数filterを更新
       setFilter(e.target.value as ComponentState);
       // filteredListを更新
@@ -264,9 +207,6 @@ export const TodoList = () => {
 
   /** Todoを期日が近い順に並べ替える */
   const handleSort = useCallback(() => {
-    // 更新フォームが開いていたら閉じる。
-    setEditId("");
-    clearEditTodo(null);
     const list: Task[] = [...todoList];
     /** 期日の記載がないtodoを格納 */
     const withoutDeadline: Task[] = [];
@@ -297,9 +237,9 @@ export const TodoList = () => {
         </Text>
       </Box>
       <Box>
-        {todosCount > 0 && (
+        {todosCount > numCompletedTodos ? (
           <>
-            {/** todoが１件以上ある場合 */}
+            {/** 未完了todoがある場合 */}
             <Box display="flex" mb={0} pb={0}>
               <Text ml="2px" mb={0}>
                 タイトル
@@ -354,35 +294,37 @@ export const TodoList = () => {
                 <Text fontWeight="700">↑</Text>
               </Button>
             </Box>
-          </>
-        )}
-        {filteredTodosCount > 0 ? (
+          {/** フィルター有無関わらず表示するTodoがある場合 */}
+          {filteredTodosCount > 0 ? (
           filteredList.map((item) =>
             item.id === editId ? (
               <Box
                 id="editForm"
                 key={item.id}
+                className="edtForm"
                 mt="3px"
                 backgroundColor="orange"
                 borderRadius="5px"
                 border="#347"
                 px="2px"
                 py="4px"
-                ref={boxRef}
               >
                 <form
                   onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
                     handleEdit(e, item)
                   }
                 >
+                  {/** 編集中Todoの行 */}
                   <Box
                     display="flex"
                     justifyContent="start"
                     alignItems="center"
+                    className="edtForm"
                   >
                     <Input
                       size="sm"
                       type="text"
+                      className="edtForm"
                       backgroundColor="white"
                       name="title"
                       id="editTitle"
@@ -396,6 +338,7 @@ export const TodoList = () => {
                     <Input
                       type="text"
                       size="sm"
+                      className="edtForm"
                       name="details"
                       w="238px"
                       backgroundColor="white"
@@ -405,6 +348,7 @@ export const TodoList = () => {
                     />
                     <Select
                       name="status"
+                      className="edtForm"
                       size="sm"
                       w="97px"
                       h="32px"
@@ -421,6 +365,7 @@ export const TodoList = () => {
                     <Input
                       type="date"
                       name="deadline"
+                      className="edtForm"
                       size="sm"
                       ml="6px"
                       w="128px"
@@ -429,12 +374,13 @@ export const TodoList = () => {
                       value={editTodo?.deadline}
                       onChange={handleOnChange}
                     />
-                    <Text ml="2px" w="95px">
+                    <Text ml="2px" w="95px" className="edtForm">
                       {editTodo?.createdAt}
                     </Text>
                     <Button
                       mr="3px"
                       h="32px"
+                      className="edtForm"
                       backgroundColor="aliceblue"
                       fontSize="0.8rem"
                       color="charcoal"
@@ -452,10 +398,7 @@ export const TodoList = () => {
                       color="charcoal"
                       px="4px"
                       py="2px"
-                      onClick={() => {
-                        clearEditTodo(null);
-                        setEditId("");
-                      }}
+                      onClick={closeEditForm}
                     >
                       キャンセル
                     </Button>
@@ -474,6 +417,7 @@ export const TodoList = () => {
                 px="5px"
                 py="3px"
               >
+                {/** 編集中ではないTodoの行 */}
                 <Text w="240px">{item.title}</Text>
                 <Text w="240px">{item.details}</Text>
                 <Select
@@ -502,6 +446,7 @@ export const TodoList = () => {
                 <Button
                   mr="3px"
                   h="32px"
+                  className="edtForm"
                   backgroundColor="orange"
                   fontSize="0.8rem"
                   color="white"
@@ -528,9 +473,15 @@ export const TodoList = () => {
           )
         ) : (
           <Text fontSize="1.4rem" textAlign="center" marginTop={4}>
-            未完了Todoなし!
+            当該ステータスのTodoなし
           </Text>
         )}
+        </>
+        ) : (
+          <Text fontSize="1.4rem" textAlign="center" marginTop={4}>
+            未完了Todoなし
+          </Text>
+        )}        
       </Box>
     </Box>
   );

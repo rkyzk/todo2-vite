@@ -1,14 +1,10 @@
 button:hover,
 button:active {
   color: rgb(97, 60, 8) !important;
-  border: none;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   background-color: rgb(240, 213, 116) !important;
-}
-
-button:disabled {
-  background-color: rgb(108, 87, 28);
-  color: #eee;
-  opacity: 0.5;
 }
 
 .AddForm {
