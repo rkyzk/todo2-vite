@@ -2,7 +2,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { todoState } from "../states/TodoState";
 import { useCallback, useRef, useEffect, useState } from "react";
 import { todoListState } from "../states/TodoListState";
-import "../styles/AddTodo.module.css";
+import "../styles/style.css";
 import { editIdState } from "../states/EditIdState";
 import { Task, Status } from "../types/Task";
 import { ref, set } from "firebase/database";
@@ -17,7 +17,7 @@ export const AddTodo = () => {
   const [todoList, setTodoList] = useRecoilState(todoListState);
   /** 編集中Todoの内容を格納 */
   const editId = useRecoilValue(editIdState);
-  /** タイトルのバリデーション表示 */
+  /** タイトルのエラー有無判定 */
   const [error, setError] = useState(false);
   /** 追加フォームのタイトル入力欄にrefを設定 */
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,8 +31,13 @@ export const AddTodo = () => {
   const handleAddTask = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      // エラー有無判定ステートをfalseに設定
+      setError(false);
       // タイトルにスペースのみ登録されている場合バリデーションを表示
-      setError(todo.title.replace(/\s+/g, "") === "");
+      if (todo.title.replace(/\s+/g, "") === "") {
+        setError(true);
+        return;
+      }
       /** 32桁のuuidを生成 */
       const getUUID = () => {
         const digits = "0123456789abcdef";
@@ -64,7 +69,7 @@ export const AddTodo = () => {
       // todo Stateを初期値に戻す。追加フォームも初期状態に戻る
       clearTodo(null);
     },
-    [todo, todoList]
+    [todo, todoList, error]
   );
 
   /** 入力内容をtodo に格納。画面に反映される。 */
@@ -104,7 +109,7 @@ export const AddTodo = () => {
   };
 
   return (
-    <Box w="920px" marginTop={10} mx="auto" pt={20}>
+    <Box w={{ md: "680px" }} marginTop={10} mx="auto" pt={20}>
       <Box display="flex" justifyContent="center" alignItems="center" mb="30px">
         <Text fontSize="1.2rem" fontWeight="200" mr="6px" mt="2px">
           <i className="fa-regular fa-rectangle-list"></i>
@@ -117,9 +122,12 @@ export const AddTodo = () => {
       <form className="AddForm" onSubmit={handleAddTask}>
         <Box
           display="flex"
+          flexDirection={{ base: "column", md: "row" }}
           justifyContent="center"
-          gap="1px"
+          gap={{ base: "2px", md: "1px" }}
           align-items="center"
+          w={{ base: "200px", md: "680px" }}
+          mx="auto"
         >
           <Box>
             <Input
@@ -161,35 +169,43 @@ export const AddTodo = () => {
             size="sm"
             borderRadius="5px"
             backgroundColor="white"
-            w="130px"
+            w={{ base: "200px", md: "130px" }}
             onChange={handleOnChange}
             value={todo.deadline}
           />
-          <Button
-            mr="2px"
-            h="32px"
-            backgroundColor="orange"
-            fontSize="0.8rem"
-            color="white"
-            px="10px"
-            py="2px"
-            type="submit"
-            disabled={!!editId}
+          <Box
+            display="flex"
+            justifyContent="center"
+            mt={{ base: "5px", md: "0px" }}
           >
-            追加
-          </Button>
-          <Button
-            h="32px"
-            backgroundColor="orange"
-            color="white"
-            fontSize="0.8rem"
-            px="10px"
-            py="2px"
-            type="button"
-            onClick={clearTodo}
-          >
-            クリア
-          </Button>
+            <Button
+              mx="2px"
+              h="32px"
+              w={{ base: "60px", md: "auto" }}
+              backgroundColor="orange"
+              fontSize="0.8rem"
+              color="white"
+              px="10px"
+              py="2px"
+              type="submit"
+              disabled={!!editId}
+            >
+              追加
+            </Button>
+            <Button
+              h="32px"
+              w={{ base: "60px", md: "auto" }}
+              backgroundColor="orange"
+              color="white"
+              fontSize="0.8rem"
+              px="10px"
+              py="2px"
+              type="button"
+              onClick={clearTodo}
+            >
+              クリア
+            </Button>
+          </Box>
         </Box>
       </form>
     </Box>

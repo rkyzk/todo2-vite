@@ -2,7 +2,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { todoListState } from "../states/TodoListState";
 import { Task } from "../types/Task";
 import React, { useCallback } from "react";
-import "../styles/CompletedTodoList.module.css";
+import "../styles/style.css";
 import { ref, remove, update } from "firebase/database";
 import { db } from "../../FirebaseConfig";
 import {

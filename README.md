@@ -43,8 +43,3 @@ Fontawesome のアイコンを使用
   `npm dev run`
 - chakra UI インストール
   `npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion`
-
-git mv todo/public .
-git rm repo.git/webapp
-git add _
-git commit -m
