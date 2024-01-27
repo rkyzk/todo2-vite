@@ -22,15 +22,6 @@
 - 未完了リストを期限が近い順に並べ替え
 - 未完了リストをステータスによりフィルター
 
-## メモ
-
-- vite プロジェクト作成コマンド
-  `npm create vite`
-- プログラム実行コマンド
-  `npm dev run`
-- chakra UI インストール
-  `npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion`
-
 ## 参考資料
 
 Recoil
@@ -43,3 +34,17 @@ Fontawesome のアイコンを使用
 ## 課題
 
 - レスポンシブにしたい
+
+## メモ
+
+- vite プロジェクト作成コマンド
+  `npm create vite`
+- プログラム実行コマンド
+  `npm dev run`
+- chakra UI インストール
+  `npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion`
+
+git mv todo/public .
+git rm repo.git/webapp
+git add _
+git commit -m
