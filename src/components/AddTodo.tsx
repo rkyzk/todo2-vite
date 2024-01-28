@@ -109,7 +109,13 @@ export const AddTodo = () => {
   };
 
   return (
-    <Box w={{ md: "680px" }} marginTop={10} mx="auto" pt={20}>
+    <Box
+      w={{ md: "680px" }}
+      marginTop={10}
+      mx="auto"
+      pt={20}
+      mb={{ base: "20px", md: "30px" }}
+    >
       <Box display="flex" justifyContent="center" alignItems="center" mb="30px">
         <Text fontSize="1.2rem" fontWeight="200" mr="6px" mt="2px">
           <i className="fa-regular fa-rectangle-list"></i>
@@ -119,7 +125,7 @@ export const AddTodo = () => {
         </Text>
       </Box>
       {/** 追加フォーム */}
-      <form className="AddForm" onSubmit={handleAddTask}>
+      <form onSubmit={handleAddTask}>
         <Box
           display="flex"
           flexDirection={{ base: "column", md: "row" }}

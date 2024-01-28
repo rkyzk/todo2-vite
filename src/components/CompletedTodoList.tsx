@@ -70,7 +70,12 @@ export const CompletedTodoList = () => {
   return (
     <>
       {numCompletedTodos > 0 && (
-        <Box w="950px" mt={10} mx="auto">
+        <Box
+          w={{ base: "265px", sm: "490px", lg: "950px" }}
+          mt={10}
+          mx="auto"
+          pb="20px"
+        >
           <Box display="flex" justifyContent="center">
             <Text mr="4px" mt="4px" fontWeight="400" fontSize="1.2rem">
               <i className="fa-solid fa-check-double"></i>
@@ -80,7 +85,7 @@ export const CompletedTodoList = () => {
             </Text>
           </Box>
           {/** 完了リストのヘッダー */}
-          <Box display="flex" mb={0} pb={0}>
+          <Box display={{ base: "none", lg: "flex" }} mb={0} pb={0}>
             <Text ml="2px" mb={0}>
               タイトル
             </Text>
@@ -100,48 +105,88 @@ export const CompletedTodoList = () => {
           {completedList.map((item: Task) => (
             <Box
               key={item.id}
-              display="flex"
+              w="100%"
+              display={{ lg: "flex" }}
               alignItems="center"
               mt={1}
               backgroundColor="#fafafa"
               borderRadius="5px"
               border="#347"
-              pl="2px"
+              px="6px"
               py="4px"
             >
-              <Text w="242px" pl="2px">
-                {item.title}
-              </Text>
-              <Text w="242px">{item.details}</Text>
-              <Text w="105px" pl="5px">
-                完了
-              </Text>
-              <Text w="124px" ml="4px">
-                {item.deadline}
-              </Text>
-              <Text w="95px">{item.createdAt}</Text>
-              <Button
-                ml="4px"
-                mr="3px"
-                h="32px"
-                backgroundColor="orange"
-                fontSize="0.8rem"
-                color="white"
-                px="10px"
-                onClick={(e: React.MouseEvent) => putBackItem(e, item)}
+              <Box display={{ sm: "flex" }}>
+                <Box>
+                  <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                    &lt;タイトル&gt;
+                  </Text>
+                  <Text w="242px" pl="2px">
+                    {item.title}
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                    &lt;内容&gt;
+                  </Text>
+                  <Text w="242px">{item.details}</Text>
+                </Box>
+              </Box>
+              <Box
+                display={{ sm: "flex" }}
+                alignItems="center"
+                mt={{ sm: "8px", lg: "0px" }}
               >
-                戻す
-              </Button>
-              <Button
-                h="32px"
-                backgroundColor="orange"
-                fontSize="0.8rem"
-                color="white"
-                px="10px"
-                onClick={(e: React.MouseEvent) => handleDelete(e, item)}
-              >
-                削除
-              </Button>
+                <Box>
+                  <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                    &lt;ステータス&gt;
+                  </Text>
+                  <Text w="105px" pl="5px">
+                    完了
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                    &lt;期日&gt;
+                  </Text>
+                  <Text w="124px" ml={{ sm: "4px" }}>
+                    {item.deadline}
+                  </Text>
+                </Box>
+                <Box ml={{ sm: "8px", lg: "none" }}>
+                  <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                    &lt;記載日&gt;
+                  </Text>
+                  <Text w="95px">{item.createdAt}</Text>
+                </Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  mt={{ base: "3px", lg: "0px" }}
+                >
+                  <Button
+                    ml="4px"
+                    mr="3px"
+                    h="32px"
+                    backgroundColor="orange"
+                    fontSize="0.8rem"
+                    color="white"
+                    px="10px"
+                    onClick={(e: React.MouseEvent) => putBackItem(e, item)}
+                  >
+                    戻す
+                  </Button>
+                  <Button
+                    h="32px"
+                    backgroundColor="orange"
+                    fontSize="0.8rem"
+                    color="white"
+                    px="10px"
+                    onClick={(e: React.MouseEvent) => handleDelete(e, item)}
+                  >
+                    削除
+                  </Button>
+                </Box>
+              </Box>
             </Box>
           ))}
         </Box>

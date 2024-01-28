@@ -2,8 +2,3 @@ button:hover,
 button:active {
   background-color: rgb(240, 213, 116) !important;
 }
-
-.AddForm {
-  width: 100%;
-  padding-top: 30px;
-}

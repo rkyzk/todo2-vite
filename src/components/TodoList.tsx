@@ -254,7 +254,7 @@ export const TodoList = () => {
               <Text ml="182px" mb={0}>
                 内容
               </Text>
-              <Text ml="210px" mb={0}>
+              <Text ml="213px" mb={0}>
                 ステータス
               </Text>
               <Text ml="31px" mb={0}>
@@ -279,8 +279,8 @@ export const TodoList = () => {
                 size="sm"
                 h="28px"
                 mt={0}
-                ml="4px"
-                w="101px"
+                ml="7px"
+                w={{ base: "85px", sm: "101px" }}
                 name="filter"
                 backgroundColor="white"
                 borderColor="gray"
@@ -446,14 +446,13 @@ export const TodoList = () => {
                     key={item.id}
                     display="flex"
                     flexDirection={{ base: "column", lg: "row" }}
-                    justifyContent="start"
                     gap="2px"
-                    alignItems="center"
+                    alignItems={{ lg: "center" }}
                     mt="3px"
                     backgroundColor="#fafafa"
                     borderRadius="5px"
                     border="#347"
-                    px="2px"
+                    px="6px"
                     py="4px"
                     w={{ base: "265px", sm: "490px", lg: "942px" }}
                     mx="auto"
@@ -465,64 +464,108 @@ export const TodoList = () => {
                       alignItems="center"
                       gap="1px"
                     >
-                      <Text w="240px">{item.title}</Text>
-                      <Text w="240px">{item.details}</Text>
+                      <Box>
+                        <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                          &lt;タイトル&gt;
+                        </Text>
+                        <Text w="240px">{item.title}</Text>
+                      </Box>
+                      <Box>
+                        <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                          &lt;内容&gt;
+                        </Text>
+                        <Text w="240px">{item.details}</Text>
+                      </Box>
                     </Box>
                     <Box
                       display="flex"
                       flexDirection={{ base: "column", sm: "row" }}
                       justifyContent="start"
-                      alignItems="center"
+                      alignItems={{ lg: "center" }}
                       gap="1px"
                     >
-                      <Select
-                        name="status"
-                        w="102px"
-                        h="34px"
-                        borderRadius="5px"
-                        borderColor="gray"
-                        backgroundColor="white"
-                        m={0}
-                        value={item.status}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                          onChangeSelectListItem(e, item)
-                        }
+                      <Box>
+                        <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                          &lt;ステータス&gt;
+                        </Text>
+                        <Select
+                          name="status"
+                          w={{ base: "90px", lg: "102px" }}
+                          h={{ base: "28px", lg: "34px" }}
+                          size={{ base: "sm", lg: "md" }}
+                          borderRadius="5px"
+                          borderColor="gray"
+                          backgroundColor="white"
+                          value={item.status}
+                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                            onChangeSelectListItem(e, item)
+                          }
+                        >
+                          <option value="notStarted">未着手</option>
+                          <option value="inProgress">進行中</option>
+                          <option value="done">完了</option>
+                        </Select>
+                      </Box>
+                      <Box
+                        w={{ base: "240px", sm: "120px" }}
+                        ml={{ sm: "20px", lg: "auto" }}
                       >
-                        <option value="notStarted">未着手</option>
-                        <option value="inProgress">進行中</option>
-                        <option value="done">完了</option>
-                      </Select>
-                      <Text w="120px" marginLeft={{ lg: "6px" }}>
-                        {item.deadline}
-                      </Text>
-                      <Text w="95px" marginLeft={{ lg: "8px" }}>
-                        {item.createdAt}
-                      </Text>
-                      <Button
-                        mr="3px"
-                        h="32px"
-                        className="edtForm"
-                        backgroundColor="orange"
-                        fontSize="0.8rem"
-                        color="white"
-                        px="10px"
-                        py="2px"
-                        ml="2px"
-                        onClick={() => showEditForm(item)}
-                      >
-                        編集
-                      </Button>
-                      <Button
-                        h="32px"
-                        backgroundColor="orange"
-                        fontSize="0.8rem"
-                        color="white"
-                        px="10px"
-                        py="2px"
-                        onClick={() => handleDelete(item)}
-                      >
-                        削除
-                      </Button>
+                        <Text
+                          fontSize="0.8rem"
+                          display={{ lg: "none" }}
+                          marginLeft={{ sm: "6px" }}
+                        >
+                          &lt;期日&gt;
+                        </Text>
+                        <Text
+                          w="120px"
+                          marginLeft={{ sm: "6px" }}
+                          marginTop={{ md: "5px", lg: "auto" }}
+                        >
+                          {item.deadline}
+                        </Text>
+                      </Box>
+                      <Box ml={{ sm: "9px", lg: "auto" }}>
+                        <Text fontSize="0.8rem" display={{ lg: "none" }}>
+                          &lt;記載日&gt;
+                        </Text>
+                        <Text
+                          w="95px"
+                          marginLeft={{ lg: "8px" }}
+                          marginTop={{ md: "5px", lg: "auto" }}
+                        >
+                          {item.createdAt}
+                        </Text>
+                      </Box>
+                      <Box display="flex">
+                        <Button
+                          mr="3px"
+                          h="32px"
+                          className="edtForm"
+                          backgroundColor="orange"
+                          fontSize="0.8rem"
+                          color="white"
+                          px="10px"
+                          py="2px"
+                          ml="2px"
+                          onClick={() => showEditForm(item)}
+                          marginTop={{ sm: "12px", lg: "auto" }}
+                        >
+                          編集
+                        </Button>
+                        <Button
+                          h="32px"
+                          backgroundColor="orange"
+                          fontSize="0.8rem"
+                          color="white"
+                          px="10px"
+                          py="2px"
+                          onClick={() => handleDelete(item)}
+                          marginTop={{ sm: "12px", lg: "auto" }}
+                        >
+                          削除
+                        </Button>
+                      </Box>
                     </Box>
                   </Box>
                 )
