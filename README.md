@@ -31,10 +31,6 @@ https://www.youtube.com/watch?v=S93hsNFmIcM
 
 Fontawesome のアイコンを使用
 
-## 課題
-
-- レスポンシブにしたい
-
 ## メモ
 
 - vite プロジェクト作成コマンド
