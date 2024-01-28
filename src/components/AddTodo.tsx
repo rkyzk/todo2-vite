@@ -111,7 +111,7 @@ export const AddTodo = () => {
   return (
     <Box
       w={{ md: "680px" }}
-      marginTop={10}
+      marginTop={{ base: "25px", sm: "40px" }}
       mx="auto"
       pt={20}
       mb={{ base: "20px", md: "30px" }}

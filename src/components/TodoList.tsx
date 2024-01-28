@@ -14,8 +14,6 @@ import {
   filteredListStateLength,
 } from "../states/FilteredListState";
 import { filterState } from "../states/FilterState";
-import { breakpointsState } from "../states/BreakpointsState";
-import { Breakpoints } from "../types/Breakpoints";
 import { db } from "../../FirebaseConfig";
 import { ref, update, remove } from "firebase/database";
 import {
@@ -44,9 +42,6 @@ export const TodoList = () => {
   const [completedList, setCompletedList] = useRecoilState(completedListState);
   /** 完了Todoの件数取得 */
   const numCompletedTodos = useRecoilValue(completedTodosCount);
-
-  /** breakpoints(chakra UI)値取得 */
-  const breakpoints: Breakpoints = useRecoilValue(breakpointsState);
 
   /** 初回レンダリング時にDBのTodoリストを変数todoListに格納 */
   useEffect(() => {
