@@ -36,6 +36,6 @@ Fontawesome のアイコンを使用
 - vite プロジェクト作成コマンド
   `npm create vite`
 - プログラム実行コマンド
-  `npm dev run`
+  `npm run dev`
 - chakra UI インストール
   `npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion`
